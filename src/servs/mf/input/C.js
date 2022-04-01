@@ -7,7 +7,7 @@ export function C_is_low(x)
 
 export function C_is_normal(x)
 {
-    return middle(3, 5, 7, x);
+    return middle(3, 3.5, 6.5, 7, x);
 }
 
 export function C_is_high(x)

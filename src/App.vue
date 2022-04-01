@@ -40,6 +40,7 @@
         <label>2 - Вы больны пневмонией (лечиться дома)</label><br/>
         <label>3 - Вы больны пневмонией (лечиться в больнице)</label>
       </div>
+      <LineChart v-bind:chartData="chartData" v-bind:options="options" ref="LineChart"/>
     </div>
     <div v-if="defRes === -2">
       <div class="result">
@@ -50,13 +51,20 @@
 </template>
 
 <script>
-import {numberRules, numberSubconditionsInRule, genRules} from '@/servs/Rule';
-import {fuzzifier} from '@/servs/fuzzifier'
+import {numberRules, numberSubconditionsInRule, genRules} from './servs/Rule';
+import {fuzzifier} from './servs/fuzzifier'
 import {aggregate} from "./servs/fuzzyInferenceEngine";
 import {defuzzifier} from "./servs/defuzzifier";
+import {A_is_old} from "./servs/mf/input/A";
+import {B_is_low} from "./servs/mf/input/B";
+import {C_is_high} from "./servs/mf/input/C";
+import {D_is_traced} from "./servs/mf/input/D";
+import {E_is_often} from "./servs/mf/input/E";
+import LineChart from "./components/LineChart";
 
 export default {
   name: 'App',
+  components: {LineChart},
   data() {
     return {
       rules: new Array(numberRules),
@@ -67,22 +75,70 @@ export default {
       xB: '',
       xC: '',
       xD: '',
-      xE: ''
+      xE: '',
+
+      yA: '',
+      yB: '',
+      yC: '',
+      yD: '',
+      yE: '',
+      count: 0,
+
+      chartData: {
+        labels: [
+          'Возраст',
+          'Давление',
+          'Азот мочевины крови',
+          'Оценка сознания',
+          'Частота дыхания'
+        ],
+        datasets: [
+          {
+            label: '',
+            data: []
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false
+      }
     }
   },
   methods: {
     send()
     {
-      if (this.xA === '' || this.xB === '' || this.xC === '' || this.xD === '' || this.xE === '')
+      if (this.xA === '' || this.xB === '' || this.xC === '' || this.xD === '' || this.xE === '') {
         this.defRes = -2;
+        this.count = 0;
+      }
       else
       {
         this.rules = genRules();
         this.b = fuzzifier(this.rules, this.xA, this.xB, this.xC, this.xD, this.xE);
         this.c = aggregate(this.b);
+        this.draw();
         this.defRes = defuzzifier(this.c, this.rules);
       }
     },
+    draw()
+    {
+      this.yA = A_is_old(this.xA);
+      this.yB = B_is_low(this.xB);
+      this.yC = C_is_high(this.xC);
+      this.yD = D_is_traced(this.xD);
+      this.yE = E_is_often(this.xE);
+      this.chartData.datasets = [
+        {
+          label: 'График',
+          data: [this.yA, this.yB, this.yC, this.yD, this.yE, 0, 1]
+        }
+      ];
+      if (this.count !== 0)
+        this.$refs.LineChart.draw();
+      else
+        this.count = 1;
+    }
   }
 }
 </script>

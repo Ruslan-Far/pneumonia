@@ -7,7 +7,7 @@ export function B_is_low(x)
 
 export function B_is_normal(x)
 {
-    return middle(80, 120, 160, x);
+    return middle(80, 90, 150, 160, x);
 }
 
 export function B_is_high(x)

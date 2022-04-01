@@ -153,15 +153,6 @@ export function genRules()
     rules[i++] = new Rule(A_is_young_middle, B_is_high, C_is_high, D_is_traced, E_is_often, S_is_very_bad);
 
 
-
-
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-
-
     rules[i++] = new Rule(A_is_old, B_is_low, C_is_low, D_is_absent, E_is_not_often, S_is_bad);
     rules[i++] = new Rule(A_is_old, B_is_low, C_is_low, D_is_absent, E_is_normal, S_is_bad);
     rules[i++] = new Rule(A_is_old, B_is_low, C_is_low, D_is_absent, E_is_often, S_is_very_bad);
